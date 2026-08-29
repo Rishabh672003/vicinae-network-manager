@@ -212,12 +212,14 @@ export default function WifiCommand() {
 				const aps = await getAccessPoints(dev.objectPath);
 				setNetworks(aps);
 			}
+			return dev;
 		} catch (e: any) {
 			await showToast({
 				style: Toast.Style.Failure,
 				title: "NetworkManager error",
 				message: e.message,
 			});
+			return null;
 		} finally {
 			setIsLoading(false);
 		}
@@ -244,7 +246,7 @@ export default function WifiCommand() {
 	// ── Lifecycle ──────────────────────────────────────────────────────────
 
 	useEffect(() => {
-		refresh().then((dev) => startScan(device));
+		refresh().then((dev) => startScan(dev));
 		pollRef.current = setInterval(() => refresh(true), POLL_MS);
 
 		return () => {
